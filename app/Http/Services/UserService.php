@@ -17,7 +17,7 @@ class UserService
     public function index(array $request): LengthAwarePaginator
     {
         if (isset($request['filters']) && !empty($request['filters'])) {
-            return $this->filterService->filterUsers($request['filters']);
+            return $this->filterService::filterUsers($request['filters']);
         }
 
         return $this->user::paginate(10);

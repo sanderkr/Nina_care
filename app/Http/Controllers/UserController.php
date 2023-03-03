@@ -17,6 +17,7 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
+     * @throws Exception
      */
     public function index(UserRequest $request): AnonymousResourceCollection
     {
