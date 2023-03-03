@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Services\UserService;
 use Exception;
@@ -17,10 +18,10 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): AnonymousResourceCollection
+    public function index(UserRequest $request): AnonymousResourceCollection
     {
         try {
-            return UserResource::collection($this->userService->index());
+            return UserResource::collection($this->userService->index($request->validated()));
         } catch (Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }
