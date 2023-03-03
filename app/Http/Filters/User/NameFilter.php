@@ -2,9 +2,10 @@
 
 namespace App\Http\Filters\User;
 
+use App\Http\Filters\Filter;
 use Illuminate\Database\Query\Builder;
 
-class NameFilter
+class NameFilter extends Filter
 {
     public function __construct(protected readonly string $name)
     {
