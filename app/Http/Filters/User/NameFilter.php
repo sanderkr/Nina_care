@@ -3,15 +3,17 @@
 namespace App\Http\Filters\User;
 
 use App\Http\Filters\Filter;
+use Closure;
 use Illuminate\Database\Query\Builder;
 
 class NameFilter extends Filter
 {
-    public function __construct(protected readonly string $name)
+  public function handle(Builder $builder, Closure $closure): Builder
     {
-    }
-    public function filter(Builder $builder): Builder
-    {
-        return $builder->where('name', 'LIKE', '%' . $this->name);
+        if (isset($this->data['name'])) {
+            $builder->where('name', 'LIKE', '%' . $this->data['name'] . '%');
+        }
+
+        return $closure($builder);
     }
 }

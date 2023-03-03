@@ -2,30 +2,30 @@
 
 namespace App\Http\Services;
 
-use App\Http\Filters\User\AgeFilter;
-use App\Http\Filters\User\DayFilter;
-use App\Http\Filters\User\NameFilter;
+use App\Http\Filters\Filter;
+use App\Http\Filters\Filters;
+
 use App\Models\User;
+use Illuminate\Contracts\Pipeline\Pipeline;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class FilterService
 {
-    public function filterUsers(array $filters): LengthAwarePaginator
+    public static function filterUsers(array $filters): LengthAwarePaginator
     {
-        $query = User::query();
+        return app(Pipeline::class)
+            ->send(User::query())
+            ->through(self::filters($filters))
+            ->thenReturn()
+            ->paginate(10);
+    }
 
-        if (isset($filters['name'])) {
-            $query = (new NameFilter($filters['name']))->filter($query);
-        }
-
-        if (isset($filters['age'])) {
-            $query = (new AgeFilter($filters['age']))->filter($query);
-        }
-
-        if (isset($filters['day'])) {
-            $query = (new DayFilter($filters['day']))->filter($query);
-        }
-
-        return $query::paginate(10);
+    public static function filters(array $filters): array
+    {
+        return collect($filters)
+            ->map(fn (array $data, string $key): Filter =>
+                Filters::from($key)->createFilter($data))
+            ->values()
+            ->all();
     }
 }

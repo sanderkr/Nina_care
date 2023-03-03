@@ -2,9 +2,13 @@
 
 namespace App\Http\Filters;
 
+use Closure;
 use Illuminate\Database\Query\Builder;
 
 abstract class Filter
 {
-    abstract public function filter(Builder $builder): Builder;
+    public function __construct(protected readonly array $data)
+    {
+    }
+    abstract public function handle(Builder $builder, Closure $closure): Builder;
 }
